@@ -82,13 +82,12 @@ var corsOptions = {
 
 app.options('/plats', cors(corsOptions));
 app.get('/plats', cors(corsOptions));
-
+app.use('/usagers/:usager_id/commandes', routeurApiCommandes);
 app.use('/usagers', routeurApiUsagers);
 app.use('/livreurs', routeurApiLivreurs);
 app.use('/plats', routeurApiPlats);
 // Route Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/', routeurApiCommandes);
 
 
 app.all('*', function (req, res) {
