@@ -41,7 +41,7 @@ routerApiCommande.use(function (req, res, next) {
 });
 
 // Création d'une commande
-routerApiCommande.route('/usagers/:usager_id/commandes')
+routerApiCommande.route('/')
   .post(function (req, res) {
     console.log('création d\'une commande pour l\'usager ayant l\'id ' + req.params.usager_id);
     // Vérification de l'id de l'usager connecté 
@@ -66,7 +66,7 @@ routerApiCommande.route('/usagers/:usager_id/commandes')
   });
 
 // Consultation de la commande ayant l'id " commande_id ".
-routerApiCommande.route('/usagers/:usager_id/commandes/:commande_id')
+routerApiCommande.route('/:commande_id')
   .get(function (req, res) {
     console.log('consultation de la commande id: ' + req.params.commande_id + ' de l\'usager id: ' + req.params.usager_id);
     if (req.jeton.id !== req.params.usager_id) {
@@ -134,7 +134,7 @@ routerApiCommande.route('/usagers/:usager_id/commandes/:commande_id')
   });
 
 // Associer livreur à la commande ayant l'id " commande_id ".
-routerApiCommande.route('/usagers/:usager_id/commandes/:commande_id/livreur')
+routerApiCommande.route('/:commande_id/livreur')
   .put(function (req, res) {
     console.log("Association du livreur à la commande ayant l'id : " + req.params.commande_id);
     if (req.jeton.id !== req.params.usager_id) {
@@ -171,7 +171,7 @@ routerApiCommande.route('/usagers/:usager_id/commandes/:commande_id/livreur')
   });
 
 // Consultation des plats de la commande ayant l'id " commande_id ".
-routerApiCommande.route('/usagers/:usager_id/commandes/:commande_id/plats')
+routerApiCommande.route('/:commande_id/plats')
   .get(function (req, res) {
     console.log("Consultation des plats de la commande ayant l'id : " + req.params.commande_id);
     if (req.jeton.id !== req.params.usager_id) {
@@ -192,7 +192,7 @@ routerApiCommande.route('/usagers/:usager_id/commandes/:commande_id/plats')
   });
 
 
-routerApiCommande.route('/usagers/:usager_id/commandes/:commande_id/plats/:plat_id')
+  routerApiCommande.route('/:commande_id/plats/:plat_id')
   // permet d'associer un plat à la commande ayant l'id " commande_id ".
   .put(function (req, res) {
     console.log("Association du plat ayant l'id " + req.params.plat_id + " à la commande ayant l'id : " + req.params.commande_id);
