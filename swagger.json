@@ -1,0 +1,836 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "API TP3 Kevein Simon",
+    "description": "API qui permettra aux usagers de l'application de créer un compte, se connecter, passer des commandes.",
+    "version": "0.1"
+  },
+  "servers": [{
+    "url": "http://localhost:8090"
+  }],
+  "security": [{
+    "bearerAuth": []
+  }],
+  "tags": [{
+      "name": "Commandes",
+      "description": "Tout ce qui concerne les commandes"
+    },
+    {
+      "name": "Plats",
+      "description": "Tout ce qui concerne les plats"
+    },
+    {
+      "name": "Usagers",
+      "description": "Tout ce qui concerne les usagers"
+    },
+    {
+      "name": "Livreurs",
+      "description": "Tout ce qui concerne les livreurs"
+    }
+  ],
+  "paths": {
+    "/plats": {
+      "get": {
+        "tags": [
+          "Plats"
+        ],
+        "summary": "Tous les plats",
+        "description": "Permet de consulter tous les\nPlats",
+        "parameters": [{
+          "name": "Access-Control-Allow-Origin",
+          "in": "header",
+          "required": false,
+          "style": "simple",
+          "explode": false,
+          "schema": {
+            "type": "string"
+          },
+          "example": "https://inspector.swagger.io"
+        }],
+        "responses": {
+          "200": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Plat"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "post": {
+        "tags": [
+          "Plats"
+        ],
+        "summary": "Créer un plat",
+        "description": "Permet de créer un nouveau Plat",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Plat"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"nom\": \"Quart de livre BLT\",\r\n    \"nbrPortions\": 2\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "successful creation",
+            "schema": {
+              "$ref": "#/definitions/Plat"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/usagers/{usager_id}/commandes/{commande_id}/plats/{plat_id}": {
+      "put": {
+        "tags": [
+          "Commandes",
+          "Plats"
+        ],
+        "summary": "Ajouter un plat à une commande",
+        "description": "Permet d’associer un plat à la commande de l'usager selon leurs id",
+        "parameters": [{
+            "name": "usager_id",
+            "in": "path",
+            "description": "ID de l'usager",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "commande_id",
+            "in": "path",
+            "description": "ID de la commande",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "plat_id",
+            "in": "path",
+            "description": "ID du plat à ajouter",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Plat"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"nom\": \"BigMac\",\r\n    \"nbrPortions\": 4\r\n}"
+                },
+                "1": {
+                  "value": "{\r\n    \"nom\": \"BigMac\",\r\n    \"nbrPortions\": 4\r\n}"
+                },
+                "2": {
+                  "value": "{\r\n    \"nom\": \"BigMac\",\r\n    \"nbrPortions\": 1\r\n}"
+                }
+              }
+            }
+          }
+        },
+
+        "responses": {
+          "200": {
+            "description": "modification du plat de la commande avec succès",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          },
+          "201": {
+            "description": "ajout du plat à la commande avec succès",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "delete": {
+        "tags": [
+          "Commandes"
+        ],
+        "summary": "Supprimer un plat de la commande",
+        "description": "Permet de retirer le plat de la commande de l'usager selon leurs id",
+        "responses": {
+          "204": {
+            "description": "Suppression réussi"
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/usagers": {
+      "post": {
+        "tags": [
+          "Usagers"
+        ],
+        "summary": "Créer un usager",
+        "description": "Permet de Créer un usager.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Usager"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"nom\": \"Fleury\",\r\n    \"prenom\": \"Philippe\",\r\n    \"adresse\": \"450, chemin du golf, Montreal\",\r\n    \"pseudo\": \"philou\",\r\n    \"motDePasse\": \"mdp3\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+
+          "201": {
+            "description": "ajout de l'usager avec succès",
+            "schema": {
+              "$ref": "#/definitions/Usager"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/usagers/{usager_id}/commandes/{commande_id}/livreur": {
+      "put": {
+        "tags": [
+          "Commandes",
+          "Livreurs"
+        ],
+        "summary": "Ajouter un livreur à une commande",
+        "description": "Permet d’associer un livreur à la commande de l'usager selon leur id",
+        "parameters": [{
+            "name": "usager_id",
+            "in": "path",
+            "description": "ID de l'usager",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "commande_id",
+            "in": "path",
+            "description": "ID de la commande",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Livreur"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"nom\": \"Laporte\",\r\n    \"prenom\": \"Stephano\",\r\n    \"voiture\": \"Tercel\",\r\n    \"quartier\": \"Sillery\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+
+          "200": {
+            "description": "(Modification) Objet Json Commande contenant maintenant le Livreur",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          },
+          "201": {
+            "description": "(Création) Objet Json Commande contenant maintenant le Livreur",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/usagers/{usager_id}/commandes/{commande_id}/plats": {
+      "get": {
+        "tags": [
+          "Commandes",
+          "Plats"
+        ],
+        "summary": "retourne tout les plats de la commande",
+        "description": "Permet de consulter les plats dans la commande de l'usager selon leurs id",
+        "parameters": [{
+            "name": "usager_id",
+            "in": "path",
+            "description": "ID de l'usager",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "commande_id",
+            "in": "path",
+            "description": "ID de la commande",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Plat"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/livreurs/{livreur_id}": {
+      "get": {
+        "tags": [
+          "Livreurs"
+        ],
+        "summary": "consulter le livreur",
+        "description": "Permet de consulter le livreur selon l'id",
+        "parameters": [{
+          "name": "livreur_id",
+          "in": "path",
+          "description": "ID du livreur",
+          "required": true,
+          "type": "integer",
+          "format": "int64"
+        }],
+        "responses": {
+          "200": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "delete": {
+        "tags": [
+          "Livreurs"
+        ],
+        "summary": "Supprimer le livreur",
+        "description": "Permet de supprimer le livreur selon l'id",
+        "responses": {
+          "204": {
+            "description": "Supression avec succès"
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/usagers/{usager_id}/commandes": {
+      "post": {
+        "tags": [
+          "Commandes"
+        ],
+        "summary": "Créer une commande",
+        "description": "Permet de créer une commande (sans livreur ni plats) pour l’usager selon son id",
+        "parameters": [{
+          "name": "usager_id",
+          "in": "path",
+          "description": "ID de l'usager",
+          "required": true,
+          "type": "integer",
+          "format": "int64"
+        }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Commande"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"dateArrivee\": \"2021-05-12\",\r\n    \"usager\": {\"_id\":\"609cb7a31602168cba0e38a6\",\"nom\":\"Fleury\",\"prenom\":\"Philippe\",\"adresse\":\"450, chemin du golf, Montreal\",\"pseudo\":\"laurenzo\",\"motDePasse\":\"mdp3\",\"__v\":0}\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/usagers/{usager_id}": {
+      "get": {
+        "tags": [
+          "Usagers"
+        ],
+        "summary": "Retourne un usager",
+        "description": "Permet de consulter l’usager selon son id",
+        "parameters": [{
+          "name": "usager_id",
+          "in": "path",
+          "description": "ID de l'usager",
+          "required": true,
+          "type": "integer",
+          "format": "int64"
+        }],
+        "responses": {
+          "200": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Usager"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/livreurs": {
+      "post": {
+        "tags": [
+          "Livreurs"
+        ],
+        "summary": "Permet de créer un Livreur",
+        "description": "Permet de créer un Livreur",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Livreur"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"nom\":\"Bisson\",\r\n    \"prenom\":\"Bobby\",\r\n    \"voiture\":\"Hyundai Elantra\",\r\n    \"quartier\":\"St-Roch\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Livreur"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/plats/{plat_id}": {
+      "get": {
+        "tags": [
+          "Plats"
+        ],
+        "summary": "retourne un plat",
+        "description": "Permet de consulter le plat selon son id",
+        "parameters": [{
+          "name": "plat_id",
+          "in": "path",
+          "description": "ID du plat",
+          "required": true,
+          "type": "integer",
+          "format": "int64"
+        }],
+        "responses": {
+          "200": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Plat"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "delete": {
+        "tags": [
+          "Plats"
+        ],
+        "summary": "supprime un plat",
+        "description": "Permet de supprimer le plat selon son id",
+        "responses": {
+          "204": {
+            "description": "Suppression Réussite"
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/usagers/{usager_id}/commandes/{commande_id}": {
+      "get": {
+        "tags": [
+          "Commandes"
+        ],
+        "summary": "retourne la commande de l'usager",
+        "description": "Permet de consulter la commande de l'usager selon son id",
+        "parameters": [{
+            "name": "usager_id",
+            "in": "path",
+            "description": "ID de l'usager",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "commande_id",
+            "in": "path",
+            "description": "ID de la commande",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Opération réussie",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "put": {
+        "tags": [
+          "Commandes"
+        ],
+        "summary": "Modifier ou Créer une commande",
+        "description": "Permet de créer ou modifier la commande (doit seulement modifier la date d'arrivée de la commande Sinon 403)",
+        "parameters": [{
+            "name": "usager_id",
+            "in": "path",
+            "description": "ID de l'usager",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "commande_id",
+            "in": "path",
+            "description": "ID de la commande",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/definitions/Commande"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"dateArrivee\": \"2021-12-12\",\r\n    \"usager\": {\"_id\":\"609cb7a31602168cba0e38a6\",\"nom\":\"Fleury\",\"prenom\":\"Philippe\",\"adresse\":\"450, chemin du golf, Montreal\",\"pseudo\":\"laurenzo\",\"motDePasse\":\"mdp3\",\"__v\":0}\r\n}"
+                },
+                "1": {
+                  "value": "{\r\n    \"dateArrivee\": \"2021-12-12\",\r\n    \"usager\": {\"_id\":\"609cb7a31602168cba0e38a6\",\"nom\":\"Fleury\",\"prenom\":\"Philippe\",\"adresse\":\"450, chemin du golf, Montreal\",\"pseudo\":\"laurenzo\",\"motDePasse\":\"mdp3\",\"__v\":0}\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Modification réussie",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          },
+          "201": {
+            "description": "Création réussie",
+            "schema": {
+              "$ref": "#/definitions/Commande"
+            }
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "delete": {
+        "tags": [
+          "Commandes"
+        ],
+        "summary": "Supprime une commande",
+        "description": "Permet de supprimer la commande selon l'id",
+        "responses": {
+          "204": {
+            "description": "Suppression réussite"
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    },
+    "/connexions": {
+      "post": {
+        "tags": [
+          "Usagers"
+        ],
+        "summary": "Connexion d'un usager",
+        "description": "Permet de se connecter et de recevoir un token d’identification JWT",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Usager"
+              },
+              "examples": {
+                "0": {
+                  "value": "{\r\n    \"pseudo\": \"laurenzo\",\r\n    \"motDePasse\": \"mdp1\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Opération réussie"
+          }
+        },
+        "servers": [{
+          "url": "http://localhost:8090"
+        }]
+      },
+      "servers": [{
+        "url": "http://localhost:8090"
+      }]
+    }
+  },
+  "definitions": {
+    "Plat": {
+      "type": "object",
+      "properties": {
+        "nbrPortions": {
+          "type": "integer"
+        },
+        "nom": {
+          "type": "string"
+        }
+      }
+    },
+    "Usager": {
+      "type": "object",
+      "properties": {
+        "motDePasse": {
+          "type": "string"
+        },
+        "adresse": {
+          "type": "string"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "prenom": {
+          "type": "string"
+        },
+        "pseudo": {
+          "type": "string"
+        }
+      }
+    },
+    "Livreur": {
+      "type": "object",
+      "properties": {
+        "voiture": {
+          "type": "string"
+        },
+        "quartier": {
+          "type": "string"
+        },
+        "nom": {
+          "type": "string"
+        },
+        "prenom": {
+          "type": "string"
+        }
+      }
+    },
+    "Commande": {
+      "type": "object",
+      "properties": {
+        "dateArrivee": {
+          "type": "string"
+        },
+        "usager": {
+          "$ref": "#/components/schemas/Usager"
+        }
+      }
+    },
+    "Usager_connexion": {
+      "type": "object",
+      "properties": {
+        "motDePasse": {
+          "type": "string"
+        },
+        "pseudo": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Plat": {
+        "type": "object",
+        "properties": {
+          "nbrPortions": {
+            "type": "integer"
+          },
+          "nom": {
+            "type": "string"
+          }
+        }
+      },
+      "Usager": {
+        "type": "object",
+        "properties": {
+          "motDePasse": {
+            "type": "string"
+          },
+          "adresse": {
+            "type": "string"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "prenom": {
+            "type": "string"
+          },
+          "pseudo": {
+            "type": "string"
+          }
+        }
+      },
+      "Livreur": {
+        "type": "object",
+        "properties": {
+          "voiture": {
+            "type": "string"
+          },
+          "quartier": {
+            "type": "string"
+          },
+          "nom": {
+            "type": "string"
+          },
+          "prenom": {
+            "type": "string"
+          }
+        }
+      },
+      "Commande": {
+        "type": "object",
+        "properties": {
+          "dateArrivee": {
+            "type": "string"
+          },
+          "usager": {
+            "$ref": "#/components/schemas/Usager"
+          }
+        }
+      },
+      "Usager_connexion": {
+        "type": "object",
+        "properties": {
+          "motDePasse": {
+            "type": "string"
+          },
+          "pseudo": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
