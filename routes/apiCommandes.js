@@ -2,7 +2,7 @@
 
 var express = require('express');
 // Paramètres de configuration généraux.
-var config = require('./config');
+var config = require('../config');
 var routerApiCommande = express.Router();
 var url_base = "https://tp3-keveinsimon.herokuapp.com";
 var verifierAuth = require('../VerificationAuth');
