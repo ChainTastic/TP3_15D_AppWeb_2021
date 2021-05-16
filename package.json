@@ -1,0 +1,27 @@
+{
+  "name": "tp3projet",
+  "version": "1.0.0",
+  "description": "Travail Pratique #3 Session Hiver 2020 du cours 15D",
+  "main": "app.js",
+  "engines": {
+    "node": "v15.4.0"
+  },
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kevein Simon",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "bunyan": "^1.8.15",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-hateoas-links": "^1.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "merge": "^2.1.1",
+    "mongodb": "^3.6.6",
+    "mongoose": "^5.12.7",
+    "swagger-ui-express": "^4.1.6"
+  }
+}
