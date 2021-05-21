@@ -28,7 +28,7 @@ routerApiPlat.use(function (req, res, next) {
     verifierAuth(req, function (estAuthentifie, jetonDecode) {
         if (!estAuthentifie) {
             // USAGER NON AUTHENTIFIÉ
-            res.status(401).end();
+            res.status(401).send('Erreur 401 : non authentifié');
         } else {
             // USAGER AUTHENTIFIÉ
             // Sauvegarde du jeton décodé dans la requête pour usage ultérieur.
@@ -48,35 +48,54 @@ routerApiPlat.route('/')
     .post(function (req, res) {
         console.log('création du plat');
         //création du modèle à partir du body de la requête
-        var nouveauPlat = new PlatModel(req.body);
-        //on sauvegarde dans la BD
-        nouveauPlat.save(function (err) {
-            if (err) throw err;
-            res.setHeader('Location', url_base + '/plats/' + nouveauPlat.id.toString());
-            //si la sauvegarde fonctionne, on retourne 201 et on met le nouveau plat dans le body de la réponse
-            res.status(201).json(nouveauPlat, [
-                {rel: "self",method: "GET", href: url_base + "/plats/"+nouveauPlat.id.toString()},
-                {rel: "delete",method: "DELETE", href: url_base + "/plats/"+nouveauPlat.id.toString()}
-            ]);
-        });
+        if (req.body.nom && req.body.nbrPortions && req.body.nbrPortions >= 0) {
+            var nouveauPlat = new PlatModel(req.body);
+            //on sauvegarde dans la BD
+            nouveauPlat.save(function (err) {
+                if (err) console.log(err._message);
+                res.setHeader('Location', url_base + '/plats/' + nouveauPlat.id.toString());
+                //si la sauvegarde fonctionne, on retourne 201 et on met le nouveau plat dans le body de la réponse
+                res.status(201).json(nouveauPlat, [{
+                        rel: "self",
+                        method: "GET",
+                        href: url_base + "/plats/" + nouveauPlat.id.toString()
+                    },
+                    {
+                        rel: "delete",
+                        method: "DELETE",
+                        href: url_base + "/plats/" + nouveauPlat.id.toString()
+                    }
+                ]);
+            });
+        } else {
+            res.status(400).send('Erreur 400 - champs manquants/invalides');
+        }
+
     })
     //Consultation de tous les  plats
     .get(function (req, res) {
         console.log('consultation de tous les plats');
         PlatModel.find({}, function (err, plats) {
-            if (err) throw err;
+            if (err) console.log(err._message);
 
             var resBody = [];
-            
+
             plats.forEach(plate => {
                 //C'Est ici qu'on inclut les hyperliens que l'on souhaite joindre à chaque élément de la collection
-                var links =[
-                    {rel: "self",method: "GET",href: url_base + "/plats/"+plate._id.toString()},
-                    {rel: "delete",method: "DELETE",href: url_base +"/plats/"+plate._id.toString()}
+                var links = [{
+                        rel: "self",
+                        method: "GET",
+                        href: url_base + "/plats/" + plate._id.toString()
+                    },
+                    {
+                        rel: "delete",
+                        method: "DELETE",
+                        href: url_base + "/plats/" + plate._id.toString()
+                    }
                 ];
                 var platToJson = plate.toJSON();
                 var platAvecLink = {
-                    plat : platToJson,
+                    plat: platToJson,
                     links
                 };
                 resBody.push(platAvecLink);
@@ -86,7 +105,7 @@ routerApiPlat.route('/')
     })
     .all(function (req, res) {
         console.log('Méthode HTTP non permise (405)');
-        res.status(405).end();
+        res.status(405).send('Erreur 405 : Méthode non-permise !');
     });
 
 
@@ -100,12 +119,19 @@ routerApiPlat.route('/:plat_id')
         console.log('consultation du plat avec id : ' + req.params.plat_id);
         // fonction de l'ODM Mongoose qui va chercher notre plat dans la DB via une fonction asynchrone
         PlatModel.findById(req.params.plat_id, function (err, plat) {
-            if (err) throw err;
-            if (plat) res.json(plat, [
-                {rel: "create",method: "POST", href: url_base + "/plats"},
-                {rel: "delete",method: "DELETE", href: url_base + "/plats/"+plat.id.toString()}
+            if (err) console.log(err._message);
+            if (plat) res.json(plat, [{
+                    rel: "create",
+                    method: "POST",
+                    href: url_base + "/plats"
+                },
+                {
+                    rel: "delete",
+                    method: "DELETE",
+                    href: url_base + "/plats/" + plat.id.toString()
+                }
             ]);
-            else res.status(404).end();
+            else res.status(404).send('Erreur 404 : Ressource inexistante !');
         });
     })
 
@@ -113,13 +139,13 @@ routerApiPlat.route('/:plat_id')
     .delete(function (req, res) {
         console.log('Suppression du plat id :' + req.params.plat_id);
         PlatModel.findByIdAndDelete(req.params.plat_id, function (err) {
-            if (err) throw err;
+            if (err) console.log(err._message);
             res.status(204).end();
         });
     })
     .all(function (req, res) {
         console.log('Méthode HTTP non permise (405)');
-        res.status(405).end();
+        res.status(405).send('Erreur 405 : Méthode non-permise !');
     });
 
 module.exports = routerApiPlat;

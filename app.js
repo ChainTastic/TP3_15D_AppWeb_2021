@@ -43,26 +43,34 @@ app.post('/connexions', function (req, res) {
   // Vérification si l'usager existe
   Usager.findOne({
     pseudo: req.body.pseudo,
-    motDePasse: req.body.motDePasse
   }, function (err, usager) {
-    if (err) throw err;
+    if (err) console.log(err._message);
     if (!usager) {
-      res.status(400).end();
+      res.status(404).send('Erreur 404 : Ressource inexistante !');
     } else {
-      var payload = {
-        user: usager.pseudo,
-        id: usager._id
-      };
-      // Créer le jeton JWT car les informations d'authentification sont valides.
-      var jwtToken = jwt.sign(payload, app.get('jwt-secret'), {
-        // Expiration en secondes (24 heures).
-        expiresIn: 86400
-      });
-      res.json({
-        "token": jwtToken
-      });
+      if (usager.motDePasse !== req.body.motDePasse) {
+        res.status(403).send('Erreur 403 : interdit');
+      } else {
+        var payload = {
+          user: usager.pseudo,
+          id: usager._id
+        };
+        // Créer le jeton JWT car les informations d'authentification sont valides.
+        var jwtToken = jwt.sign(payload, app.get('jwt-secret'), {
+          // Expiration en secondes (24 heures).
+          expiresIn: 86400
+        });
+        res.json({
+          "token": jwtToken
+        });
+      }
+
     }
   });
+})
+.all('/connexions', function (req, res) {
+  console.log('Méthode HTTP non permise (405)');
+  res.status(405).send('Erreur 405 : Méthode non-permise !');
 });
 
 
@@ -82,8 +90,8 @@ var corsOptions = {
 
 app.options('/plats', cors(corsOptions));
 app.get('/plats', cors(corsOptions));
-app.use('/usagers/:usager_id/commandes', routeurApiCommandes);
 app.use('/usagers', routeurApiUsagers);
+app.use('/usagers', routeurApiCommandes);
 app.use('/livreurs', routeurApiLivreurs);
 app.use('/plats', routeurApiPlats);
 // Route Documentation
@@ -91,7 +99,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 app.all('*', function (req, res) {
-  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.status(404).send('Erreur 404 : Ressource inexistante !');
 });
 

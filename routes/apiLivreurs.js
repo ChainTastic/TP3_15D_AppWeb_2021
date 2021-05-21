@@ -27,7 +27,7 @@ routerApiLivreur.use(function (req, res, next) {
   verifierAuth(req, function (estAuthentifie, jetonDecode) {
     if (!estAuthentifie) {
       // Usager NON authentifié.
-      res.status(401).end();
+      res.status(401).send('Erreur 401 : non authentifié');
     } else {
       // Usager authentifié
       // sauvegarde du jeton décodé dans la requête pour usage ultérieur
@@ -48,19 +48,24 @@ routerApiLivreur.route('/')
   .post(function (req, res) {
     console.log('création du livreur');
     //création du modèle à partir du body de la requête
-    var nouveauLivreur = new LivreurModel(req.body);
-    //on sauvegarde dans la BD
-    nouveauLivreur.save(function (err) {
-      if (err) throw err;
-      res.setHeader('Location', url_base + '/livreurs/' + nouveauLivreur.id.toString());
-      //si la sauvegarde fonctionne, on retourne 201 et on met le nouveau usager dans le body de la réponse
-      res.status(201).json(nouveauLivreur);
-    });
+    if (req.body.nom && req.body.prenom && req.body.voiture && req.body.quartier) {
+      var nouveauLivreur = new LivreurModel(req.body);
+      //on sauvegarde dans la BD
+      nouveauLivreur.save(function (err) {
+        if (err) console.log(err._message);
+        res.setHeader('Location', url_base + '/livreurs/' + nouveauLivreur.id.toString());
+        //si la sauvegarde fonctionne, on retourne 201 et on met le nouveau usager dans le body de la réponse
+        res.status(201).json(nouveauLivreur);
+      });
+    } else {
+      res.status(400).send('Erreur 400 - champs manquants/invalides')
+    }
+
 
   })
   .all(function (req, res) {
     console.log('Méthode HTTP non permise (405)');
-    res.status(405).end();
+    res.status(405).send('Erreur 405 : Méthode non-permise !');
   });
 
 // Route pour accéder à un livreur à l'id spécifié en query string
@@ -71,9 +76,9 @@ routerApiLivreur.route('/:livreur_id')
     console.log('consultation du livreur avec id : ' + req.params.livreur_id);
     // fonction de l'ODM Mongoose qui va chercher notre livreur dans la DB via une fonction asynchrone
     LivreurModel.findById(req.params.livreur_id, function (err, livreur) {
-      if (err) throw err;
+      if (err) console.log(err._message);
       if (livreur) res.json(livreur);
-      else res.status(404).end();
+      else res.status(404).send('Erreur 404 : Ressource inexistante !');
     });
   })
 
@@ -81,13 +86,13 @@ routerApiLivreur.route('/:livreur_id')
   .delete(function (req, res) {
     console.log('Suppression du livreur id :' + req.params.livreur_id);
     LivreurModel.findByIdAndDelete(req.params.livreur_id, function (err) {
-      if (err) throw err;
+      if (err) console.log(err._message);
       res.status(204).end();
     });
   })
   .all(function (req, res) {
     console.log('Méthode HTTP non permise (405)');
-    res.status(405).end();
+    res.status(405).send('Erreur 405 : Méthode non-permise !');
   });
 
 module.exports = routerApiLivreur;
