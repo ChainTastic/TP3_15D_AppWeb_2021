@@ -17,7 +17,7 @@ var usagerSchema = new mongoose.Schema({
   },
   pseudo: {
     type: String,
-    unique: true,
+    index: true,
     required: true
   },
   motDePasse: {
